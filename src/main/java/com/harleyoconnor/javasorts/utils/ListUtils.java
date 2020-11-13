@@ -1,5 +1,6 @@
 package com.harleyoconnor.javasorts.utils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -84,6 +85,41 @@ public final class ListUtils {
                 }
             }
         } while (!sorted);
+    }
+
+    /**
+     * Sorts the list using the 'Merge Sort' method (splits the lists into two, uses bubble sort from above on both, then merges them back into the original list).
+     *
+     * @param list The list to be sorted.
+     * @param ascending Whether or not to sort it ascending or descending.
+     */
+    public static void doMergeSort (final List<Integer> list, final boolean ascending) {
+        final List<Integer> numListSnapshot = new ArrayList<>(list);
+        final int middleIndex = (int) Math.floor((double) list.size() / 2);
+        final List<Integer> firstHalf = numListSnapshot.subList(0, middleIndex);
+        final List<Integer> secondHalf = numListSnapshot.subList(middleIndex, list.size());
+
+        doBubbleSort(firstHalf, ascending);
+        doBubbleSort(secondHalf, ascending);
+
+        int firstHalfIndex = 0, secondHalfIndex = 0;
+
+        for (int i = 0; i < list.size(); i++) {
+            int newNum;
+
+            final int firstHalfNum = firstHalfIndex < firstHalf.size() ? firstHalf.get(firstHalfIndex) : (ascending ? getMaxNumber(secondHalf) + 1 : getMinNumber(secondHalf) - 1);;
+            final int secondHalfNum = secondHalfIndex < secondHalf.size() ? secondHalf.get(secondHalfIndex) : (ascending ? getMaxNumber(firstHalf) + 1 : getMinNumber(firstHalf) - 1);
+
+            if (((firstHalfNum > secondHalfNum && ascending) || (firstHalfNum < secondHalfNum && !ascending))) {
+                newNum = secondHalfNum;
+                secondHalfIndex++;
+            } else {
+                newNum = firstHalfNum;
+                firstHalfIndex++;
+            }
+
+            list.set(i, newNum);
+        }
     }
 
 }

@@ -13,16 +13,18 @@ public final class Test {
     public void test () {
         System.out.println("\n\n === TESTING === \n\n");
 
-        final List<Integer> list = new ArrayList<>();
+        final List<Integer> list = new ArrayList<>(Arrays.asList(4, -5, 2, 3, 1, 7, -7, 3, -2, 5, 8, -52, 26, 21));
 
-        list.addAll(Arrays.asList(4, 2, 7, 3, 1, 7, 3));
+//        ListUtils.doBubbleSort(list, true);
+//        System.out.println(list);
+//
+//        System.out.println(ListUtils.getMinNumber(list));
+//        System.out.println(ListUtils.getMaxNumber(list));
+//        System.out.println(ListUtils.getAverage(list));
 
-        ListUtils.doBubbleSort(list, true);
+        ListUtils.doMergeSort(list, false);
+
         System.out.println(list);
-
-        System.out.println(ListUtils.getMinNumber(list));
-        System.out.println(ListUtils.getMaxNumber(list));
-        System.out.println(ListUtils.getAverage(list));
 
         System.out.println("\n\n === FINISH TESTING ===\n\n");
     }
