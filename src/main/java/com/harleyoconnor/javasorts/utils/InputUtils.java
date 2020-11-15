@@ -1,6 +1,8 @@
 package com.harleyoconnor.javasorts.utils;
 
+import javax.annotation.Nullable;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 
 /**
@@ -36,43 +38,93 @@ public final class InputUtils {
     /**
      * Gets an integer input. Loops until a valid integer is input according to the parameters given.
      *
-     * @param prompt The message sent to the user informing them of what to enter
+     * @param prompt The message sent to the user informing them of what to enter.
      * @param requirePositive A boolean value stating whether or not to allow negative values.
      * @param requireNotZero A boolean value stating whether or not to allow zero.
      * @return The integer input.
      */
     public static int getIntInput (final String prompt, final boolean requirePositive, final boolean requireNotZero) {
-        int intInput = 0;
+        int intInput;
 
         while (true) {
-            System.out.print(prompt + " ");
-            boolean inputMismatch = false;
+            final Object input = getIntOrStringInput(prompt, requirePositive, requireNotZero);
 
-            try {
-                intInput = in.nextInt();
-            } catch (InputMismatchException e) {
-                inputMismatch = true;
+            if (input instanceof Integer) {
+                intInput = (Integer) input;
+                break;
             }
 
-            if (inputMismatch) {
-                invalidInput("integer");
-                continue;
-            }
-
-            if (intInput < 0 && requirePositive) {
-                invalidInput("positive integer");
-                continue;
-            }
-
-            if (intInput == 0 && requireNotZero) {
-                invalidInput("non-zero integer");
-                continue;
-            }
-
-            break;
+            if (input != null)
+                System.out.println("\nYou must enter a valid integer.");
         }
 
         return intInput;
+    }
+
+    /**
+     * Gets an integer, or a string if one was input.
+     *
+     * @param prompt The message sent to the user informing them of what to enter.
+     * @param requirePositiveIfInt A boolean value stating whether or not to allow negative values if the inpout is an integer.
+     * @param requireNotZeroIfInt A boolean value stating whether or not to allow zero if the input is an integer.
+     * @return An integer, string, or null if it was an invalid integer (according to the parameters).
+     */
+    @Nullable
+    public static Object getIntOrStringInput (final String prompt, final boolean requirePositiveIfInt, final boolean requireNotZeroIfInt) {
+        final String inputStr = getInput(prompt, true);
+        final int intInput;
+
+        try {
+            intInput = Integer.parseInt(inputStr);
+        } catch (NumberFormatException e) {
+            return inputStr;
+        }
+
+        if (intInput < 0 && requirePositiveIfInt) {
+            invalidInput("positive integer");
+            return null;
+        }
+
+        if (intInput == 0 && requireNotZeroIfInt) {
+            invalidInput("non-zero integer");
+            return null;
+        }
+
+        return intInput;
+    }
+
+    /**
+     * Presents the user with all the options in the possible selections list, returns the one they select.
+     *
+     * @param prompt The message sent to the user informing them of what they are selecting. Note that the possible selections are added to this within the method.
+     * @param possibleSelections The list of possible selection strings.
+     * @return The possible selection string inputted.
+     */
+    public static String getSelection (String prompt, final List<String> possibleSelections) {
+        StringBuilder promptBuilder = new StringBuilder(prompt);
+
+        for (int i = 1; i <= possibleSelections.size(); i++) {
+            promptBuilder.append("\n").append(i).append(". ").append(possibleSelections.get(i - 1).toLowerCase());
+        }
+
+        promptBuilder.append("\n> ");
+        prompt = promptBuilder.toString();
+
+        while (true) {
+            final int selectionIndex = getIntInput(prompt, true, true) - 1;
+            String selection = "";
+
+            try {
+                selection = possibleSelections.get(selectionIndex);
+            } catch (IndexOutOfBoundsException ignored) { }
+
+            if (selection.equals("")) {
+                System.out.println("\nPlease enter a valid selection index.");
+                continue;
+            }
+
+            return selection;
+        }
     }
 
     /**
@@ -81,7 +133,7 @@ public final class InputUtils {
      * @param invalidValue The name of the invalid type.
      */
     private static void invalidInput (final String invalidValue) {
-        System.out.println("You must enter a valid " + invalidValue + ".");
+        System.out.println("\nYou must enter a valid " + invalidValue + ".");
         in.next();
     }
 

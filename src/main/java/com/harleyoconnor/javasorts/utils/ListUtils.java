@@ -9,6 +9,10 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public final class ListUtils {
 
+    public enum SortMethod {
+        BUBBLE, MERGE
+    }
+
     /**
      * Gets the average of the list by adding up all values and dividing by the size.
      *
@@ -61,12 +65,30 @@ public final class ListUtils {
     }
 
     /**
+     * Performs a sort on the giving list, by the given sort method.
+     *
+     * @param sortMethod The sort method to use.
+     * @param list The list to be sorted.
+     * @param ascending Whether or not to sort it ascending (or descending if false).
+     */
+    public static void sort (final SortMethod sortMethod, final List<Integer> list, final boolean ascending) {
+        switch (sortMethod) {
+            case BUBBLE:
+                doBubbleSort(list, ascending);
+                break;
+            case MERGE:
+                doMergeSort(list, ascending);
+                break;
+        }
+    }
+
+    /**
      * Sorts the list using the 'Bubble Sort' method.
      *
      * @param list The list to be sorted.
-     * @param ascending Whether or not to sort it ascending or descending.
+     * @param ascending Whether or not to sort it ascending (or descending if false).
      */
-    public static void doBubbleSort (final List<Integer> list, final boolean ascending) {
+    private static void doBubbleSort (final List<Integer> list, final boolean ascending) {
         boolean sorted;
 
         do {
@@ -91,9 +113,9 @@ public final class ListUtils {
      * Sorts the list using the 'Merge Sort' method (splits the lists into two, uses bubble sort from above on both, then merges them back into the original list).
      *
      * @param list The list to be sorted.
-     * @param ascending Whether or not to sort it ascending or descending.
+     * @param ascending Whether or not to sort it ascending (or descending if false).
      */
-    public static void doMergeSort (final List<Integer> list, final boolean ascending) {
+    private static void doMergeSort (final List<Integer> list, final boolean ascending) {
         final List<Integer> numListSnapshot = new ArrayList<>(list);
         final int middleIndex = (int) Math.floor((double) list.size() / 2);
         final List<Integer> firstHalf = numListSnapshot.subList(0, middleIndex);

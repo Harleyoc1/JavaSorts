@@ -22,7 +22,7 @@ public final class Test {
 //        System.out.println(ListUtils.getMaxNumber(list));
 //        System.out.println(ListUtils.getAverage(list));
 
-        ListUtils.doMergeSort(list, false);
+        ListUtils.sort(ListUtils.SortMethod.MERGE, list, false);
 
         System.out.println(list);
 
